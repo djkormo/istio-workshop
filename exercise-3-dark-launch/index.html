@@ -1,0 +1,174 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Exercise 3: Dark Launch &middot; Istio Workshop</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		
+		<meta http-equiv="content-language" content="en-us" />
+		<meta name="generator" content="Hugo 0.41" />
+		<link rel="stylesheet" href="https://polarsquad.github.io/istio-workshop/css/index.css">
+		<link rel="shortcut icon" href="https://polarsquad.github.io/istio-workshop/favicon.ico" type="image/x-icon">
+	</head>
+
+	<body>
+		<div class="Wrapper">
+			<div class="Container">
+				<div class="Header">
+  <a href="https://polarsquad.github.io/istio-workshop/">
+	<div class="Title center">
+		
+		<img alt="Istio Workshop Logo" src="https://static1.squarespace.com/static/5a21331232601e557c5feacb/t/5abb77bb562fa7acbffc891e/1522238007350/?format=1500w" height="140" />
+		
+		<span class="text">Istio Workshop</span>
+		<span class="subtext"></span>
+	</div>
+  </a>
+</div>
+
+				<div class="Content-wrapper">
+					<div class="Sidebar">
+	<div class="Menu">
+		<div class="item">
+			<a href="https://polarsquad.github.io/istio-workshop/">Home</a>
+		</div>
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/introduction/">Introduction</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/installation/">Install Kubernetes</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/install-istio/">Install Istio</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/deploy-applications/">Deploy Applications</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/">Exercise 1: Default routing</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">Exercise 2: Canary deployment</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/">Exercise 3: Dark Launch</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">Exercise 4: Telemetry</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">Exercise 5: Fault Injection</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+		
+	</div>
+</div>
+
+					<div class="Content">
+						
+	<div class="Page" id="">
+		<h1>Exercise 3: Dark Launch</h1>
+		<p>Istio can also route traffic based on the incoming HTTP. This can be useful for simulating Dark Launches: releasing production-ready features to focused set of users.</p>
+
+<p><img src="/istio-workshop/img/dark-launch.png" alt="Dark Launch" /></p>
+
+<p>In this exercise, we&rsquo;re going to simulate a Dark Launch by controlling backend traffic destination based on the HTTP headers. Specifically, we&rsquo;re going to send backend requests with header <code>X-Enable-Edge: true</code> to version 2.</p>
+
+<p>In the frontend, we can control the use of the X-Enable-Edge header using the &ldquo;Enable edge backend&rdquo; and &ldquo;Disable edge backend&rdquo; link in the frontend app.</p>
+
+<p>First, make sure that we have a default rule in place for the backend app. We&rsquo;re going to send all backend traffic to version 1 by default.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: backend-default
+spec:
+  destination:
+    name: backend-svc
+  route:
+  - labels:
+      version: v1</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/rules/default.yaml</code></pre></div>
+<p>Then, let&rsquo;s create a rule that is only applied when the header X-Enable-Edge is true:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: backend-dark-launch
+spec:
+  destination:
+    name: backend-svc
+  precedence: <span style="color:#bd93f9">2</span>
+  match:
+    request:
+      headers:
+        x-enable-edge:
+          exact: <span style="color:#f1fa8c">&#34;true&#34;</span>
+  route:
+  - labels:
+      version: v2</code></pre></div>
+<p>If an incoming request doesn&rsquo;t match with the rule, the default rule will be used as a fallback. Go ahead and create it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/rules/dark-launch.yaml</code></pre></div>
+<p>When you visit the frontend app, you can now control the backend using the links mentioned before. Try enabling the edge and create a few custom notes!</p>
+
+<p>Looks good? Let&rsquo;s make version 2 the default backend using <code>kubectl apply -f apps/backend/kube/rules/default-v2.yaml</code>, and check out how we can collect some <a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">telemetry data »</a>.</p>
+
+	</div>
+
+						<div class="Footer">Made with ❤️ by Polar Squad. Content on this site is licensed under a Creative Commons license</div>
+<script src="https://polarsquad.github.io/istio-workshop/js/index.js"></script>
+
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-xxxx-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+					</div>
+				</div>
+		</div>
+	</body>
+</html>

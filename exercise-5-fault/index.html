@@ -1,0 +1,193 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Exercise 5: Fault Injection &middot; Istio Workshop</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		
+		<meta http-equiv="content-language" content="en-us" />
+		<meta name="generator" content="Hugo 0.41" />
+		<link rel="stylesheet" href="https://polarsquad.github.io/istio-workshop/css/index.css">
+		<link rel="shortcut icon" href="https://polarsquad.github.io/istio-workshop/favicon.ico" type="image/x-icon">
+	</head>
+
+	<body>
+		<div class="Wrapper">
+			<div class="Container">
+				<div class="Header">
+  <a href="https://polarsquad.github.io/istio-workshop/">
+	<div class="Title center">
+		
+		<img alt="Istio Workshop Logo" src="https://static1.squarespace.com/static/5a21331232601e557c5feacb/t/5abb77bb562fa7acbffc891e/1522238007350/?format=1500w" height="140" />
+		
+		<span class="text">Istio Workshop</span>
+		<span class="subtext"></span>
+	</div>
+  </a>
+</div>
+
+				<div class="Content-wrapper">
+					<div class="Sidebar">
+	<div class="Menu">
+		<div class="item">
+			<a href="https://polarsquad.github.io/istio-workshop/">Home</a>
+		</div>
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/introduction/">Introduction</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/installation/">Install Kubernetes</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/install-istio/">Install Istio</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/deploy-applications/">Deploy Applications</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/">Exercise 1: Default routing</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">Exercise 2: Canary deployment</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/">Exercise 3: Dark Launch</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">Exercise 4: Telemetry</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">Exercise 5: Fault Injection</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+		
+	</div>
+</div>
+
+					<div class="Content">
+						
+	<div class="Page" id="">
+		<h1>Exercise 5: Fault Injection</h1>
+		
+
+<p>With Istio you can also inject some failures to the mesh to test failure cases.</p>
+
+<p>This can be really powerful when testing different error cases to make your service more failure tolerant.</p>
+
+<p>First open the frontend app in your browser <code>open http://$ENDPOINT</code> and you should see the html form. You can create few items to the list if you like.</p>
+
+<h2 id="delay">Delay</h2>
+
+<p>Now, let&rsquo;s think we want to simulate some slowiness in the backend <em>Service</em> to test out how it affects to our application.</p>
+
+<p><img src="/istio-workshop/img/delay.png" alt="Delay traffic" /></p>
+
+<p>With Istio we can add <em>RouteRule</em> which add some delay to the network traffic.
+Following simple RouteRule delay 100% of the requests with 10s:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: backend-delay
+  labels:
+    exercise: fault-injection
+spec:
+  destination:
+    name: backend-svc
+  precedence: <span style="color:#bd93f9">2</span>
+  httpFault:
+    delay:
+      percent: <span style="color:#bd93f9">100</span>
+      fixedDelay: 10s</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/rules/delay.yaml
+routerule <span style="color:#f1fa8c">&#34;backend-delay&#34;</span> created</code></pre></div>
+<p>Now try to refresh the page and you&rsquo;ll see that loading the page takes roughly 10s.</p>
+
+<h2 id="failure">Failure</h2>
+
+<p>Let&rsquo;s do another test case, you want to test that your frontend application handle the case that backend <em>Service</em> is down.</p>
+
+<p><img src="/istio-workshop/img/failure.png" alt="Abort traffic" /></p>
+
+<p>With Istio we can define that all requests to the backend will return HTTP 500 response:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: backend-failure
+  labels:
+    exercise: fault-injection
+spec:
+  destination:
+    name: backend-svc
+  precedence: <span style="color:#bd93f9">2</span>
+  httpFault:
+    abort:
+      percent: <span style="color:#bd93f9">100</span>
+      httpStatus: <span style="color:#bd93f9">500</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/rules/failure.yaml
+routerule <span style="color:#f1fa8c">&#34;backend-failure&#34;</span> created</code></pre></div>
+<p>Now if you try to reload the page, you should see:</p>
+
+<p><code>Error: Backend failure with code 500</code></p>
+
+<p>As you can see, Istio can help you to harden your microservice architecture by providing handy tools to simulate different kind of error cases.</p>
+
+	</div>
+
+						<div class="Footer">Made with ❤️ by Polar Squad. Content on this site is licensed under a Creative Commons license</div>
+<script src="https://polarsquad.github.io/istio-workshop/js/index.js"></script>
+
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-xxxx-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+					</div>
+				</div>
+		</div>
+	</body>
+</html>

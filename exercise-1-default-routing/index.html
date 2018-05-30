@@ -1,0 +1,169 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Exercise 1: Default routing &middot; Istio Workshop</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		
+		<meta http-equiv="content-language" content="en-us" />
+		<meta name="generator" content="Hugo 0.41" />
+		<link rel="stylesheet" href="https://polarsquad.github.io/istio-workshop/css/index.css">
+		<link rel="shortcut icon" href="https://polarsquad.github.io/istio-workshop/favicon.ico" type="image/x-icon">
+	</head>
+
+	<body>
+		<div class="Wrapper">
+			<div class="Container">
+				<div class="Header">
+  <a href="https://polarsquad.github.io/istio-workshop/">
+	<div class="Title center">
+		
+		<img alt="Istio Workshop Logo" src="https://static1.squarespace.com/static/5a21331232601e557c5feacb/t/5abb77bb562fa7acbffc891e/1522238007350/?format=1500w" height="140" />
+		
+		<span class="text">Istio Workshop</span>
+		<span class="subtext"></span>
+	</div>
+  </a>
+</div>
+
+				<div class="Content-wrapper">
+					<div class="Sidebar">
+	<div class="Menu">
+		<div class="item">
+			<a href="https://polarsquad.github.io/istio-workshop/">Home</a>
+		</div>
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/introduction/">Introduction</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/installation/">Install Kubernetes</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/install-istio/">Install Istio</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/deploy-applications/">Deploy Applications</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/">Exercise 1: Default routing</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">Exercise 2: Canary deployment</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/">Exercise 3: Dark Launch</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">Exercise 4: Telemetry</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">Exercise 5: Fault Injection</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+		
+	</div>
+</div>
+
+					<div class="Content">
+						
+	<div class="Page" id="">
+		<h1>Exercise 1: Default routing</h1>
+		<p>Now that we have our app running on Kubernetes, we can finally get to playing around with Istio. Let&rsquo;s set up some basic traffic routing capabilities for the app.</p>
+
+<p><img src="/istio-workshop/img/default-routing.png" alt="Default routing" /></p>
+
+<p>In Istio, we can set up rules for how to route traffic based on the destination service. This can be achieved with a <em>RouteRule</em> custom resource, which can be written in YAML format similar to other Kubernetes resources. Here&rsquo;s a rule that sends all traffic incoming to our frontend <em>Service</em> to version 1 of the app.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: frontend-default
+spec:
+  destination:
+    name: frontend-svc
+  route:
+  - labels:
+      version: v1</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl create -f apps/frontend/kube/rules/default.yaml
+routerule <span style="color:#f1fa8c">&#34;frontend-default&#34;</span> created</code></pre></div>
+<p>And same thing for the backend</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl create -f apps/backend/kube/rules/default.yaml
+routerule <span style="color:#f1fa8c">&#34;backend-default&#34;</span> created</code></pre></div>
+<p>Now we should get constantly &ldquo;Version 1&rdquo; response:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ curl <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span>
+&lt;html&gt;&lt;title&gt;Version <span style="color:#bd93f9">1</span>&lt;/title&gt;&lt;/html&gt;
+&lt;body&gt;
+&lt;h1 <span style="color:#8be9fd;font-style:italic">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;background-color: blue; color: white&#34;</span>&gt;Version <span style="color:#bd93f9">1</span>&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/greetings&#34;</span>&gt;greetings&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;form <span style="color:#8be9fd;font-style:italic">action</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/&#34;</span> <span style="color:#8be9fd;font-style:italic">method</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;post&#34;</span>&gt;
+Title:&lt;br/&gt; &lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;title&#34;</span> /&gt;&lt;br /&gt;
+Text:&lt;br/&gt; &lt;textarea <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span>&gt;&lt;/textarea&gt;&lt;br /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;hidden&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;useEdge&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;false&#34;</span> /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;submit&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;Submit&#34;</span> /&gt;
+&lt;/form&gt;
+&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;?useEdge=true&#34;</span>&gt;Enable edge backend&lt;/a&gt;
+&lt;/body&gt;</code></pre></div>
+<p>Perfect! We can now access our app through Istio! You can also open the URL in your web browser if you like.</p>
+
+<p>In next step we want to route part of the traffic into the new version, aka. <a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">canary deployment »</a></p>
+
+	</div>
+
+						<div class="Footer">Made with ❤️ by Polar Squad. Content on this site is licensed under a Creative Commons license</div>
+<script src="https://polarsquad.github.io/istio-workshop/js/index.js"></script>
+
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-xxxx-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+					</div>
+				</div>
+		</div>
+	</body>
+</html>

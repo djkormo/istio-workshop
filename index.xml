@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Istio Workshop</title>
+    <link>https://polarsquad.github.io/istio-workshop/</link>
+    <description>Recent content on Istio Workshop</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Made with ❤️ by Polar Squad. Content on this site is licensed under a Creative Commons license</copyright>
+    
+	<atom:link href="https://polarsquad.github.io/istio-workshop/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Introduction</title>
+      <link>https://polarsquad.github.io/istio-workshop/introduction/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/introduction/</guid>
+      <description>This Istio workshop goal is to teach reader what is Istio and how you can use it through real life examples.
+Start by cloning the workshop material
+git clone https://github.</description>
+    </item>
+    
+    <item>
+      <title>Install with Docker for Mac with Kubernetes</title>
+      <link>https://polarsquad.github.io/istio-workshop/install-docker-for-mac/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/install-docker-for-mac/</guid>
+      <description>If you&amp;rsquo;re using Docker for Mac, the installation is easy.
+ Install Edge version of Docker for Mac from here
+ Turn on experimental Kubernetes support
+ Click Docker icon at top right corner
+ Click Preferences
+ Select Kubernetes tab
+ Select Enable Kubernetes
+ Click Apply
+  Wait until installation completes!
+ Test Kubernetes
+~ $ kubectl get nodes NAME STATUS ROLES AGE VERSION docker-for-desktop Ready master 3m v1.</description>
+    </item>
+    
+    <item>
+      <title>Installation on Linux</title>
+      <link>https://polarsquad.github.io/istio-workshop/installation-for-linux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/installation-for-linux/</guid>
+      <description>If you&amp;rsquo;re using Linux, you can use Minikube for running Kubernetes. In this guide, we&amp;rsquo;re going to show how to run Kubernetes on top of a KVM-based virtual machine using Minikube.
+ First, make sure you have Docker installed in Linux. Here&amp;rsquo;s a list of guides for the officially supported distributions.
+ Ubuntu Fedora (for Fedora 28 you need to enable test repository for now) Debian CentOS  If you wish to manage Docker as a non-root user, add yourself to the Docker group.</description>
+    </item>
+    
+    <item>
+      <title>Install Kubernetes</title>
+      <link>https://polarsquad.github.io/istio-workshop/installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/installation/</guid>
+      <description>We will run Istio on top of Kubernetes. There&amp;rsquo;s multiple ways to run Kubernetes, select what suites best for you.</description>
+    </item>
+    
+    <item>
+      <title>Install Istio</title>
+      <link>https://polarsquad.github.io/istio-workshop/install-istio/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/install-istio/</guid>
+      <description>Once you have a Kubernetes cluster up and running, you can install Istio by running our Istio installation script.
+This script will perform the following steps:
+ Fetches the Istio distribution for your operating system (Linux or MacOS)
+ Unpacks Istio to the workshop directory.
+ Installs Istio core components to your Kubernetes cluster.
+ Installs Istio sidecar injector to your Kubernetes cluster.
+ Makes the pods in the default namespace to use the sidecar injector for the pods by default.</description>
+    </item>
+    
+    <item>
+      <title>Deploy Applications</title>
+      <link>https://polarsquad.github.io/istio-workshop/deploy-applications/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/deploy-applications/</guid>
+      <description>We&amp;rsquo;ll demonstrate a simple, Node.JS based frontend &amp;amp; backend app on top of Kubernetes with traffic routing handled by Istio.
+Our first task is to deploy our example applications to Kubernetes.
+The directory apps/frontend/ and apps/backend/ in the workshop Git repo contains the Node.JS source code for the apps, Dockerfile to build the Docker images, and Kubernetes deployment configuration files. You can find pre-built images from Polar Squad Docker Hub.</description>
+    </item>
+    
+    <item>
+      <title>Exercise 1: Default routing</title>
+      <link>https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/</guid>
+      <description>Now that we have our app running on Kubernetes, we can finally get to playing around with Istio. Let&amp;rsquo;s set up some basic traffic routing capabilities for the app.
+In Istio, we can set up rules for how to route traffic based on the destination service. This can be achieved with a RouteRule custom resource, which can be written in YAML format similar to other Kubernetes resources. Here&amp;rsquo;s a rule that sends all traffic incoming to our frontend Service to version 1 of the app.</description>
+    </item>
+    
+    <item>
+      <title>Exercise 2: Canary deployment</title>
+      <link>https://polarsquad.github.io/istio-workshop/exercise-2-canary/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/exercise-2-canary/</guid>
+      <description>Let&amp;rsquo;s play around with the traffic routing rules to create canary deployments.
+Weight-based routing Here&amp;rsquo;s a rule where we route 90% of the traffic to version 1 and 10% of the traffic to version 2.
+apiVersion: config.istio.io/v1alpha2 kind: RouteRule metadata: name: frontend-canary spec: destination: name: frontend-svc precedence: 2 route: - labels: version: v1 weight: 90 - labels: version: v2 weight: 10 The traffic percentages (weights) are assigned to matching labels.</description>
+    </item>
+    
+    <item>
+      <title>Exercise 3: Dark Launch</title>
+      <link>https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/</guid>
+      <description>Istio can also route traffic based on the incoming HTTP. This can be useful for simulating Dark Launches: releasing production-ready features to focused set of users.
+In this exercise, we&amp;rsquo;re going to simulate a Dark Launch by controlling backend traffic destination based on the HTTP headers. Specifically, we&amp;rsquo;re going to send backend requests with header X-Enable-Edge: true to version 2.
+In the frontend, we can control the use of the X-Enable-Edge header using the &amp;ldquo;Enable edge backend&amp;rdquo; and &amp;ldquo;Disable edge backend&amp;rdquo; link in the frontend app.</description>
+    </item>
+    
+    <item>
+      <title>Exercise 4: Telemetry</title>
+      <link>https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/</guid>
+      <description>Because all traffic goes through the proxies, Istio can collect a lot of metrics about the network.
+In this example we use Prometheus for storing the data and Grafana for the visualisation but there&amp;rsquo;s other adapters available.
+workshop $ kubectl apply -f istio/install/kubernetes/addons/prometheus.yaml configmap &amp;#34;prometheus&amp;#34; created service &amp;#34;prometheus&amp;#34; created deployment &amp;#34;prometheus&amp;#34; created serviceaccount &amp;#34;prometheus&amp;#34; created clusterrole &amp;#34;prometheus&amp;#34; created clusterrolebinding &amp;#34;prometheus&amp;#34; createdworkshop $ kubectl apply -f istio/install/kubernetes/addons/grafana.yaml service &amp;#34;grafana&amp;#34; created deployment &amp;#34;grafana&amp;#34; created serviceaccount &amp;#34;grafana&amp;#34; created View Grafana When Prometheus and Grafana are installed, you should be able to see some data.</description>
+    </item>
+    
+    <item>
+      <title>Exercise 5: Fault Injection</title>
+      <link>https://polarsquad.github.io/istio-workshop/exercise-5-fault/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://polarsquad.github.io/istio-workshop/exercise-5-fault/</guid>
+      <description>With Istio you can also inject some failures to the mesh to test failure cases.
+This can be really powerful when testing different error cases to make your service more failure tolerant.
+First open the frontend app in your browser open http://$ENDPOINT and you should see the html form. You can create few items to the list if you like.
+Delay Now, let&amp;rsquo;s think we want to simulate some slowiness in the backend Service to test out how it affects to our application.</description>
+    </item>
+    
+  </channel>
+</rss>

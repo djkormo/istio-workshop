@@ -1,0 +1,565 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Istio Workshop</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		
+		<meta http-equiv="content-language" content="en-us" />
+		<meta name="generator" content="Hugo 0.41" />
+		<link rel="stylesheet" href="https://polarsquad.github.io/istio-workshop/css/index.css">
+		<link rel="shortcut icon" href="https://polarsquad.github.io/istio-workshop/favicon.ico" type="image/x-icon">
+	</head>
+
+	<body>
+		<div class="Wrapper">
+			<div class="Container">
+				<div class="Header">
+  <a href="https://polarsquad.github.io/istio-workshop/">
+	<div class="Title center">
+		
+		<img alt="Istio Workshop Logo" src="https://static1.squarespace.com/static/5a21331232601e557c5feacb/t/5abb77bb562fa7acbffc891e/1522238007350/?format=1500w" height="140" />
+		
+		<span class="text">Istio Workshop</span>
+		<span class="subtext"></span>
+	</div>
+  </a>
+</div>
+
+				<div class="Content-wrapper">
+					<div class="Sidebar">
+	<div class="Menu">
+		<div class="item">
+			<a href="https://polarsquad.github.io/istio-workshop/">Home</a>
+		</div>
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/introduction/">Introduction</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/installation/">Install Kubernetes</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/install-istio/">Install Istio</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/deploy-applications/">Deploy Applications</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/">Exercise 1: Default routing</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">Exercise 2: Canary deployment</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/">Exercise 3: Dark Launch</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">Exercise 4: Telemetry</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">Exercise 5: Fault Injection</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+		
+	</div>
+</div>
+
+					<div class="Content">
+						
+  
+  
+	
+		<div class="Page" id="Introduction">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/introduction/">Introduction</a></h1>
+			<p>This <a href="https://github.com/goreleaser/goreleaser">Istio workshop</a> goal is to teach reader
+what is <a href="https://istio.io">Istio</a> and how you can use it through real life examples.</p>
+
+<p>Start by cloning the workshop material</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/polarsquad/istio-workshop</code></pre></div>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+		<div class="Page" id="Install Kubernetes">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/installation/">Install Kubernetes</a></h1>
+			<p>We will run <a href="https://istio.io">Istio</a> on top of <a href="https://kubernetes.io">Kubernetes</a>.
+There&rsquo;s multiple ways to run Kubernetes, select what suites best for you.</p>
+
+	</div>
+	
+	
+	
+		<div class="Page" id="Install Istio">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/install-istio/">Install Istio</a></h1>
+			<p>Once you have a Kubernetes cluster up and running, you can install Istio by running our Istio installation script.</p>
+
+<p>This script will perform the following steps:</p>
+
+<ol>
+<li><p>Fetches the Istio distribution for your operating system (Linux or MacOS)</p></li>
+
+<li><p>Unpacks Istio to the workshop directory.</p></li>
+
+<li><p>Installs <a href="https://istio.io/docs/setup/kubernetes/quick-start.html">Istio core components</a> to your Kubernetes cluster.</p></li>
+
+<li><p>Installs <a href="https://istio.io/docs/setup/kubernetes/sidecar-injection.html#automatic-sidecar-injection">Istio sidecar injector</a> to your Kubernetes cluster.</p></li>
+
+<li><p>Makes the pods in the default namespace to use the sidecar injector for the pods by default.</p></li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ ./install_istio.sh
+... bunch of lines here ...
+<span style="color:#ff79c6">============================</span>
+Add /home/myusername/Projects/internal/istio-workshop/istio/bin to your path; e.g copy paste in your shell and/or ~/.profile:
+<span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">PATH</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;</span><span style="color:#8be9fd;font-style:italic">$PATH</span><span style="color:#f1fa8c">:/home/myusername/Projects/internal/istio-workshop/istio/bin&#34;</span>
+OR use Istio directly from ./istio/bin/istioctl</code></pre></div>
+<p>Ensure that all Istio pods are in Running state, the sidecar injector is up, and the default namespace is using sidecar injection:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl get pods -n istio-system
+NAME                             READY     STATUS    RESTARTS   AGE
+istio-ca-86f55cc46f-f7r2g        <span style="color:#bd93f9">1</span>/1       Running   <span style="color:#bd93f9">0</span>          1m
+istio-ingress-5bb556fcbf-5gvsz   <span style="color:#bd93f9">1</span>/1       Running   <span style="color:#bd93f9">0</span>          1m
+istio-mixer-86f5df6997-5bw96     <span style="color:#bd93f9">3</span>/3       Running   <span style="color:#bd93f9">0</span>          1m
+istio-pilot-67d6ddbdf6-bpps4     <span style="color:#bd93f9">2</span>/2       Running   <span style="color:#bd93f9">0</span>          1m</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl -n istio-system get deployment -listio<span style="color:#ff79c6">=</span>sidecar-injector
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+istio-sidecar-injector   <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>            <span style="color:#bd93f9">1</span>           28m</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl get namespace -L istio-injection
+NAME           STATUS    AGE       ISTIO-INJECTION
+default        Active    33m       enabled
+istio-system   Active    29m       
+kube-public    Active    33m       
+kube-system    Active    33m</code></pre></div>
+<p>You&rsquo;re done! 🙂👍 Next, <a href="https://polarsquad.github.io/istio-workshop/deploy-applications/">deploy applications »</a></p>
+
+	</div>
+	
+	
+	
+		<div class="Page" id="Deploy Applications">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/deploy-applications/">Deploy Applications</a></h1>
+			
+
+<p>We&rsquo;ll demonstrate a simple, Node.JS based frontend &amp; backend app on top of Kubernetes with traffic routing handled by Istio.</p>
+
+<p><img src="/istio-workshop/img/applications-architecture.png" alt="Applications architecture" /></p>
+
+<p>Our first task is to deploy our example applications to Kubernetes.</p>
+
+<p>The directory <a href="https://github.com/polarsquad/istio-workshop/tree/master/apps/frontend">apps/frontend/</a> and <a href="https://github.com/polarsquad/istio-workshop/tree/master/apps/backend">apps/backend/</a> in the workshop Git repo contains the Node.JS source code for the apps, Dockerfile to build the Docker images, and Kubernetes deployment configuration files. You can find pre-built images from <a href="https://hub.docker.com/r/polarsquad/example-frontend/">Polar Squad Docker Hub</a>.</p>
+
+<p>The frontend app launches an HTTP server that lists notes stored in the backend app. The root endpoint (<code>/</code>) outputs a simple HTML form and a list of stored notes. The version endpoint (<code>/version</code>) outputs the app version.</p>
+
+<p>The frontend app source code is split into two versions: <code>app_v1.js</code> for version 1 and <code>app_v2.js</code> for version 2. We&rsquo;ll later run both versions of the app simultaneously to demonstrate Istio&rsquo;s traffic routing capabilities.</p>
+
+<p>Similarly, the backend app also has two versions. Version 1 has a static greeting note, and the version 2 allows adding custom notes.</p>
+
+<h2 id="deploying-to-kubernetes">Deploying to Kubernetes</h2>
+
+<p>The YAML file <a href="https://github.com/polarsquad/istio-workshop/tree/master/apps/frontend/kube/deployment.yaml">apps/frontend/kube/deployment.yaml</a> and <a href="https://github.com/polarsquad/istio-workshop/tree/master/apps/backend/kube/deployment.yaml">apps/backend/kube/deployment.yaml</a> in the workshop Git repo contains the resource definitions for our example services. It creates a <em>Deployment</em> per app and version, and exposes all deployments internally as a <em>Services</em>. Use <code>kubectl</code> to create the <em>Deployments</em> and the <em>Services</em>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/frontend/kube/deployment.yaml
+service <span style="color:#f1fa8c">&#34;frontend-svc&#34;</span> created
+deployment <span style="color:#f1fa8c">&#34;frontend-v1&#34;</span> created
+deployment <span style="color:#f1fa8c">&#34;frontend-v2&#34;</span> created</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/deployment.yaml
+service <span style="color:#f1fa8c">&#34;backend-svc&#34;</span> created
+deployment <span style="color:#f1fa8c">&#34;backend-v1&#34;</span> created
+deployment <span style="color:#f1fa8c">&#34;backend-v2&#34;</span> created</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl get deployment
+NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+backend-v1    <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>            <span style="color:#bd93f9">1</span>           12s
+backend-v2    <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>            <span style="color:#bd93f9">1</span>           12s
+frontend-v1   <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>            <span style="color:#bd93f9">1</span>           31s
+frontend-v2   <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>         <span style="color:#bd93f9">1</span>            <span style="color:#bd93f9">1</span>           31s</code></pre></div>
+<p>Next let&rsquo;s add <em>Ingress</em> so we can access it outside.</p>
+
+<h2 id="ingress">Ingress</h2>
+
+<p>Let&rsquo;s expose the frontend service using an Kubernetes <em>Ingress</em> resource. Here&rsquo;s an example <em>Ingress</em> definition where all HTTP traffic with any path will be routed to the frontend service:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend-ing
+  annotations:
+    kubernetes.io/ingress.class: <span style="color:#f1fa8c">&#34;istio&#34;</span>
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /.*
+        backend:
+          serviceName: frontend-svc
+          servicePort: <span style="color:#bd93f9">5000</span></code></pre></div>
+<p>Notice how we set the <em>Ingress</em> resource to use Istio as the ingress controller. This allows Istio to apply it&rsquo;s own routing rules for the traffic that arrives to the cluster. We can create the <em>Ingress</em> using <code>kubectl</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl create -f apps/frontend/kube/ingress.yaml
+ingress <span style="color:#f1fa8c">&#34;frontend-ing&#34;</span> created
+
+workshop $ kubectl get ingress
+NAME           HOSTS     ADDRESS   PORTS     AGE
+frontend-ing   *                   <span style="color:#bd93f9">80</span>        10s</code></pre></div>
+<h2 id="access-the-service">Access the service</h2>
+
+<p>Now that all <em>Deployments</em> and the <em>Ingress</em> are setup for our example frontend and backend apps, we can access the <em>Service</em> through Istio&rsquo;s own <em>Ingress</em> controller that was created during the Istio setup stage. In a cloud environment, Istio&rsquo;s <em>Ingress</em> controller would be exposed via an external load balancer. Since we&rsquo;re running the setup locally, we&rsquo;ll need to jump a couple of hoops to figure out the endpoint for the Istio <em>Ingress</em>.</p>
+
+<p><strong>On Docker for Mac</strong>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ <span style="color:#8be9fd;font-style:italic">ENDPOINT_HOST</span><span style="color:#ff79c6">=</span>localhost
+workshop $ <span style="color:#8be9fd;font-style:italic">ENDPOINT_PORT</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">80</span></code></pre></div>
+<p><strong>On minikube</strong>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ <span style="color:#8be9fd;font-style:italic">ENDPOINT_HOST</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>minikube ip<span style="color:#ff79c6">)</span>
+workshop $ <span style="color:#8be9fd;font-style:italic">ENDPOINT_PORT</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span>kubectl get svc istio-ingress -n istio-system -o <span style="color:#f1fa8c">&#39;jsonpath={.spec.ports[0].nodePort}&#39;</span><span style="color:#ff79c6">)</span></code></pre></div>
+<p><strong>Common</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ <span style="color:#8be9fd;font-style:italic">ENDPOINT</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;http://</span><span style="color:#8be9fd;font-style:italic">$ENDPOINT_HOST</span><span style="color:#f1fa8c">:</span><span style="color:#8be9fd;font-style:italic">$ENDPOINT_PORT</span><span style="color:#f1fa8c">&#34;</span>
+workshop $ curl <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span>
+&lt;html&gt;&lt;title&gt;Version <span style="color:#bd93f9">1</span>&lt;/title&gt;&lt;/html&gt;
+&lt;body&gt;
+&lt;h1 <span style="color:#8be9fd;font-style:italic">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;background-color: blue; color: white&#34;</span>&gt;Version <span style="color:#bd93f9">1</span>&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/greetings&#34;</span>&gt;greetings&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;form <span style="color:#8be9fd;font-style:italic">action</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/&#34;</span> <span style="color:#8be9fd;font-style:italic">method</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;post&#34;</span>&gt;
+Title:&lt;br/&gt; &lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;title&#34;</span> /&gt;&lt;br /&gt;
+Text:&lt;br/&gt; &lt;textarea <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span>&gt;&lt;/textarea&gt;&lt;br /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;hidden&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;useEdge&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;false&#34;</span> /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;submit&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;Submit&#34;</span> /&gt;
+&lt;/form&gt;
+&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;?useEdge=true&#34;</span>&gt;Enable edge backend&lt;/a&gt;
+&lt;/body&gt;</code></pre></div>
+<blockquote>
+<p>You can test the page also through browser <code>open http://$ENDPOINT</code></p>
+</blockquote>
+
+<p>You might see randomly a response with &ldquo;Version 1&rdquo; instead of &ldquo;Version 2&rdquo; as shown in the listing above.
+Don&rsquo;t worry, it&rsquo;s expected because <em>Service</em> <code>selector</code> selects both versions.</p>
+
+<p><img src="/istio-workshop/img/without-istio.png" alt="Routing without Istio" /></p>
+
+<p>Later in the exercises we use the <code>$ENDPOINT</code> in our examples to access the service.</p>
+
+<p>To start controlling the traffic with Istio, first we want to implement the <a href="https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/">default routing »</a></p>
+
+	</div>
+	
+	
+	
+		<div class="Page" id="Exercise 1: Default routing">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/">Exercise 1: Default routing</a></h1>
+			<p>Now that we have our app running on Kubernetes, we can finally get to playing around with Istio. Let&rsquo;s set up some basic traffic routing capabilities for the app.</p>
+
+<p><img src="/istio-workshop/img/default-routing.png" alt="Default routing" /></p>
+
+<p>In Istio, we can set up rules for how to route traffic based on the destination service. This can be achieved with a <em>RouteRule</em> custom resource, which can be written in YAML format similar to other Kubernetes resources. Here&rsquo;s a rule that sends all traffic incoming to our frontend <em>Service</em> to version 1 of the app.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: frontend-default
+spec:
+  destination:
+    name: frontend-svc
+  route:
+  - labels:
+      version: v1</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl create -f apps/frontend/kube/rules/default.yaml
+routerule <span style="color:#f1fa8c">&#34;frontend-default&#34;</span> created</code></pre></div>
+<p>And same thing for the backend</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl create -f apps/backend/kube/rules/default.yaml
+routerule <span style="color:#f1fa8c">&#34;backend-default&#34;</span> created</code></pre></div>
+<p>Now we should get constantly &ldquo;Version 1&rdquo; response:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ curl <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span>
+&lt;html&gt;&lt;title&gt;Version <span style="color:#bd93f9">1</span>&lt;/title&gt;&lt;/html&gt;
+&lt;body&gt;
+&lt;h1 <span style="color:#8be9fd;font-style:italic">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;background-color: blue; color: white&#34;</span>&gt;Version <span style="color:#bd93f9">1</span>&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/greetings&#34;</span>&gt;greetings&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;form <span style="color:#8be9fd;font-style:italic">action</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/&#34;</span> <span style="color:#8be9fd;font-style:italic">method</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;post&#34;</span>&gt;
+Title:&lt;br/&gt; &lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;title&#34;</span> /&gt;&lt;br /&gt;
+Text:&lt;br/&gt; &lt;textarea <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span>&gt;&lt;/textarea&gt;&lt;br /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;hidden&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;useEdge&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;false&#34;</span> /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;submit&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;Submit&#34;</span> /&gt;
+&lt;/form&gt;
+&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;?useEdge=true&#34;</span>&gt;Enable edge backend&lt;/a&gt;
+&lt;/body&gt;</code></pre></div>
+<p>Perfect! We can now access our app through Istio! You can also open the URL in your web browser if you like.</p>
+
+<p>In next step we want to route part of the traffic into the new version, aka. <a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">canary deployment »</a></p>
+
+	</div>
+	
+	
+	
+		<div class="Page" id="Exercise 2: Canary deployment">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">Exercise 2: Canary deployment</a></h1>
+			
+
+<p>Let&rsquo;s play around with the traffic routing rules to create canary deployments.</p>
+
+<h2 id="weight-based-routing">Weight-based routing</h2>
+
+<p><img src="/istio-workshop/img/canary-routing.png" alt="Default routing" /></p>
+
+<p>Here&rsquo;s a rule where we route 90% of the traffic to version 1 and 10% of the traffic to version 2.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: frontend-canary
+spec:
+  destination:
+    name: frontend-svc
+  precedence: <span style="color:#bd93f9">2</span>
+  route:
+  - labels:
+      version: v1
+    weight: <span style="color:#bd93f9">90</span>
+  - labels:
+      version: v2
+    weight: <span style="color:#bd93f9">10</span></code></pre></div>
+<p>The traffic percentages (weights) are assigned to matching labels. Create the rule:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl create -f apps/frontend/kube/rules/canary.yaml</code></pre></div>
+<blockquote>
+<p>Note that we didn&rsquo;t have to edit the previously created rule. Using the <code>precedence</code> field, we can set ordering for the routing rules. First matching <em>RoutingRule</em> will get applied.</p>
+</blockquote>
+
+<h2 id="let-s-test-it">Let&rsquo;s test it</h2>
+
+<p>Since we&rsquo;ve already set up an <em>Ingress</em> resource for our app, we can reuse the existing endpoint:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ curl <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span>
+&lt;html&gt;&lt;title&gt;Version <span style="color:#bd93f9">1</span>&lt;/title&gt;&lt;/html&gt;
+&lt;body&gt;
+&lt;h1 <span style="color:#8be9fd;font-style:italic">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;background-color: blue; color: white&#34;</span>&gt;Version <span style="color:#bd93f9">1</span>&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/greetings&#34;</span>&gt;greetings&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;form <span style="color:#8be9fd;font-style:italic">action</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/&#34;</span> <span style="color:#8be9fd;font-style:italic">method</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;post&#34;</span>&gt;
+Title:&lt;br/&gt; &lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;title&#34;</span> /&gt;&lt;br /&gt;
+Text:&lt;br/&gt; &lt;textarea <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span>&gt;&lt;/textarea&gt;&lt;br /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;hidden&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;useEdge&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;false&#34;</span> /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;submit&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;Submit&#34;</span> /&gt;
+&lt;/form&gt;
+&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;?useEdge=true&#34;</span>&gt;Enable edge backend&lt;/a&gt;
+&lt;/body&gt;</code></pre></div>
+<p>There&rsquo;s a chance you might see &ldquo;Version 2&rdquo; in the output instead of &ldquo;Version 1&rdquo; as shown above. If you repeatedly call the endpoint with <code>curl</code>, you&rsquo;ll see the output occasionally flip between the versions. You can also open the endpoint in your browser and refresh the page repeatedly for the same effect.</p>
+
+<p>To verify that the weight distribution works as expected, we can repeatedly call the version endpoint and count the occurrences. The script <code>apps/frontend/version_percentage.sh</code> does all of this for you. Let&rsquo;s run it!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ ./apps/frontend/version_percentage.sh <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span>
+Collecting <span style="color:#bd93f9">1000</span> samples from http://192.168.122.198:31875/version ...
+v1: <span style="color:#bd93f9">91</span>.1%
+v2: <span style="color:#bd93f9">8</span>.9%</code></pre></div>
+<p>The measured weight distribution will slightly vary per test, but overall it looks pretty close to what we set up.</p>
+
+<h2 id="tuning-routing-rule-weights-on-the-fly">Tuning routing rule weights on the fly</h2>
+
+<p>Tuning the routing rules on the fly is super easy! There are two ways to do it, both of which edit the <code>frontend-canary</code> routing rule we defined earlier. You can edit the rule on the server directly using <code>kubectl</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl edit routerule frontend-canary</code></pre></div>
+<p>Alternatively, edit the rule file (<code>apps/frontend/kube/rules/canary.yaml</code>) and update the rule:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/frontend/kube/rules/canary.yaml</code></pre></div>
+<p>Exercise: Change the weights to something else, and use the <code>version_percentage.sh</code> script to verify weight distribution. Note that the weights must add up to 100.</p>
+
+	</div>
+	
+	
+	
+		<div class="Page" id="Exercise 3: Dark Launch">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/">Exercise 3: Dark Launch</a></h1>
+			<p>Istio can also route traffic based on the incoming HTTP. This can be useful for simulating Dark Launches: releasing production-ready features to focused set of users.</p>
+
+<p><img src="/istio-workshop/img/dark-launch.png" alt="Dark Launch" /></p>
+
+<p>In this exercise, we&rsquo;re going to simulate a Dark Launch by controlling backend traffic destination based on the HTTP headers. Specifically, we&rsquo;re going to send backend requests with header <code>X-Enable-Edge: true</code> to version 2.</p>
+
+<p>In the frontend, we can control the use of the X-Enable-Edge header using the &ldquo;Enable edge backend&rdquo; and &ldquo;Disable edge backend&rdquo; link in the frontend app.</p>
+
+<p>First, make sure that we have a default rule in place for the backend app. We&rsquo;re going to send all backend traffic to version 1 by default.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: backend-default
+spec:
+  destination:
+    name: backend-svc
+  route:
+  - labels:
+      version: v1</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/rules/default.yaml</code></pre></div>
+<p>Then, let&rsquo;s create a rule that is only applied when the header X-Enable-Edge is true:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: backend-dark-launch
+spec:
+  destination:
+    name: backend-svc
+  precedence: <span style="color:#bd93f9">2</span>
+  match:
+    request:
+      headers:
+        x-enable-edge:
+          exact: <span style="color:#f1fa8c">&#34;true&#34;</span>
+  route:
+  - labels:
+      version: v2</code></pre></div>
+<p>If an incoming request doesn&rsquo;t match with the rule, the default rule will be used as a fallback. Go ahead and create it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/rules/dark-launch.yaml</code></pre></div>
+<p>When you visit the frontend app, you can now control the backend using the links mentioned before. Try enabling the edge and create a few custom notes!</p>
+
+<p>Looks good? Let&rsquo;s make version 2 the default backend using <code>kubectl apply -f apps/backend/kube/rules/default-v2.yaml</code>, and check out how we can collect some <a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">telemetry data »</a>.</p>
+
+	</div>
+	
+	
+	
+		<div class="Page" id="Exercise 4: Telemetry">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">Exercise 4: Telemetry</a></h1>
+			
+
+<p>Because all traffic goes through the proxies, Istio can collect a lot of metrics about the network.</p>
+
+<p>In this example we use <a href="https://prometheus.io/">Prometheus</a> for storing the data and <a href="https://grafana.com/">Grafana</a> for the visualisation but there&rsquo;s other <a href="https://istio.io/docs/reference/config/adapters">adapters</a> available.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f istio/install/kubernetes/addons/prometheus.yaml
+configmap <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+service <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+deployment <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+serviceaccount <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+clusterrole <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+clusterrolebinding <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f istio/install/kubernetes/addons/grafana.yaml
+service <span style="color:#f1fa8c">&#34;grafana&#34;</span> created
+deployment <span style="color:#f1fa8c">&#34;grafana&#34;</span> created
+serviceaccount <span style="color:#f1fa8c">&#34;grafana&#34;</span> created</code></pre></div>
+<h2 id="view-grafana">View Grafana</h2>
+
+<p>When Prometheus and Grafana are installed, you should be able to see some data. To generate some traffic and access the Grafana you need multiple terminal windows.</p>
+
+<p>Proxy local port 3000 to the Grafana:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># Window 1
+</span><span style="color:#6272a4"></span>kubectl -n istio-system port-forward <span style="color:#ff79c6">$(</span>kubectl -n istio-system get pod -l <span style="color:#8be9fd;font-style:italic">app</span><span style="color:#ff79c6">=</span>grafana -o <span style="color:#8be9fd;font-style:italic">jsonpath</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;{.items[0].metadata.name}&#39;</span><span style="color:#ff79c6">)</span> <span style="color:#bd93f9">3000</span>:3000</code></pre></div>
+<p>And open <a href="http://localhost:3000/d/1/istio-dashboard?refresh=5s&amp;orgId=1&amp;from=now-1m&amp;to=now">Istio Dashboard</a> in browser</p>
+
+<p>Next generate some traffic to the frontend:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># Window 2
+</span><span style="color:#6272a4"></span>./apps/frontend/version_percentage.sh <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span> <span style="color:#bd93f9">10000</span></code></pre></div>
+<p>You should see in the dashboard some basic information about the traffic</p>
+
+<p><img src="/istio-workshop/img/grafana-dashboard-screenshot.png" alt="Grafana dashboard" /></p>
+
+<p>Now you have some basic monitoring, in next step we want to simulate some error cases by <a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">injecting failures »</a></p>
+
+	</div>
+	
+	
+	
+		<div class="Page" id="Exercise 5: Fault Injection">
+			<h1><a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">Exercise 5: Fault Injection</a></h1>
+			
+
+<p>With Istio you can also inject some failures to the mesh to test failure cases.</p>
+
+<p>This can be really powerful when testing different error cases to make your service more failure tolerant.</p>
+
+<p>First open the frontend app in your browser <code>open http://$ENDPOINT</code> and you should see the html form. You can create few items to the list if you like.</p>
+
+<h2 id="delay">Delay</h2>
+
+<p>Now, let&rsquo;s think we want to simulate some slowiness in the backend <em>Service</em> to test out how it affects to our application.</p>
+
+<p><img src="/istio-workshop/img/delay.png" alt="Delay traffic" /></p>
+
+<p>With Istio we can add <em>RouteRule</em> which add some delay to the network traffic.
+Following simple RouteRule delay 100% of the requests with 10s:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: backend-delay
+  labels:
+    exercise: fault-injection
+spec:
+  destination:
+    name: backend-svc
+  precedence: <span style="color:#bd93f9">2</span>
+  httpFault:
+    delay:
+      percent: <span style="color:#bd93f9">100</span>
+      fixedDelay: 10s</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/rules/delay.yaml
+routerule <span style="color:#f1fa8c">&#34;backend-delay&#34;</span> created</code></pre></div>
+<p>Now try to refresh the page and you&rsquo;ll see that loading the page takes roughly 10s.</p>
+
+<h2 id="failure">Failure</h2>
+
+<p>Let&rsquo;s do another test case, you want to test that your frontend application handle the case that backend <em>Service</em> is down.</p>
+
+<p><img src="/istio-workshop/img/failure.png" alt="Abort traffic" /></p>
+
+<p>With Istio we can define that all requests to the backend will return HTTP 500 response:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: backend-failure
+  labels:
+    exercise: fault-injection
+spec:
+  destination:
+    name: backend-svc
+  precedence: <span style="color:#bd93f9">2</span>
+  httpFault:
+    abort:
+      percent: <span style="color:#bd93f9">100</span>
+      httpStatus: <span style="color:#bd93f9">500</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/backend/kube/rules/failure.yaml
+routerule <span style="color:#f1fa8c">&#34;backend-failure&#34;</span> created</code></pre></div>
+<p>Now if you try to reload the page, you should see:</p>
+
+<p><code>Error: Backend failure with code 500</code></p>
+
+<p>As you can see, Istio can help you to harden your microservice architecture by providing handy tools to simulate different kind of error cases.</p>
+
+	</div>
+	
+	
+
+						<div class="Footer">Made with ❤️ by Polar Squad. Content on this site is licensed under a Creative Commons license</div>
+<script src="https://polarsquad.github.io/istio-workshop/js/index.js"></script>
+
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-xxxx-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+					</div>
+				</div>
+		</div>
+	</body>
+</html>

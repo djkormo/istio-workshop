@@ -1,0 +1,165 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Exercise 4: Telemetry &middot; Istio Workshop</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		
+		<meta http-equiv="content-language" content="en-us" />
+		<meta name="generator" content="Hugo 0.41" />
+		<link rel="stylesheet" href="https://polarsquad.github.io/istio-workshop/css/index.css">
+		<link rel="shortcut icon" href="https://polarsquad.github.io/istio-workshop/favicon.ico" type="image/x-icon">
+	</head>
+
+	<body>
+		<div class="Wrapper">
+			<div class="Container">
+				<div class="Header">
+  <a href="https://polarsquad.github.io/istio-workshop/">
+	<div class="Title center">
+		
+		<img alt="Istio Workshop Logo" src="https://static1.squarespace.com/static/5a21331232601e557c5feacb/t/5abb77bb562fa7acbffc891e/1522238007350/?format=1500w" height="140" />
+		
+		<span class="text">Istio Workshop</span>
+		<span class="subtext"></span>
+	</div>
+  </a>
+</div>
+
+				<div class="Content-wrapper">
+					<div class="Sidebar">
+	<div class="Menu">
+		<div class="item">
+			<a href="https://polarsquad.github.io/istio-workshop/">Home</a>
+		</div>
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/introduction/">Introduction</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/installation/">Install Kubernetes</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/install-istio/">Install Istio</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/deploy-applications/">Deploy Applications</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/">Exercise 1: Default routing</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">Exercise 2: Canary deployment</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/">Exercise 3: Dark Launch</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">Exercise 4: Telemetry</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">Exercise 5: Fault Injection</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+		
+	</div>
+</div>
+
+					<div class="Content">
+						
+	<div class="Page" id="">
+		<h1>Exercise 4: Telemetry</h1>
+		
+
+<p>Because all traffic goes through the proxies, Istio can collect a lot of metrics about the network.</p>
+
+<p>In this example we use <a href="https://prometheus.io/">Prometheus</a> for storing the data and <a href="https://grafana.com/">Grafana</a> for the visualisation but there&rsquo;s other <a href="https://istio.io/docs/reference/config/adapters">adapters</a> available.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f istio/install/kubernetes/addons/prometheus.yaml
+configmap <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+service <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+deployment <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+serviceaccount <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+clusterrole <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created
+clusterrolebinding <span style="color:#f1fa8c">&#34;prometheus&#34;</span> created</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f istio/install/kubernetes/addons/grafana.yaml
+service <span style="color:#f1fa8c">&#34;grafana&#34;</span> created
+deployment <span style="color:#f1fa8c">&#34;grafana&#34;</span> created
+serviceaccount <span style="color:#f1fa8c">&#34;grafana&#34;</span> created</code></pre></div>
+<h2 id="view-grafana">View Grafana</h2>
+
+<p>When Prometheus and Grafana are installed, you should be able to see some data. To generate some traffic and access the Grafana you need multiple terminal windows.</p>
+
+<p>Proxy local port 3000 to the Grafana:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># Window 1
+</span><span style="color:#6272a4"></span>kubectl -n istio-system port-forward <span style="color:#ff79c6">$(</span>kubectl -n istio-system get pod -l <span style="color:#8be9fd;font-style:italic">app</span><span style="color:#ff79c6">=</span>grafana -o <span style="color:#8be9fd;font-style:italic">jsonpath</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;{.items[0].metadata.name}&#39;</span><span style="color:#ff79c6">)</span> <span style="color:#bd93f9">3000</span>:3000</code></pre></div>
+<p>And open <a href="http://localhost:3000/d/1/istio-dashboard?refresh=5s&amp;orgId=1&amp;from=now-1m&amp;to=now">Istio Dashboard</a> in browser</p>
+
+<p>Next generate some traffic to the frontend:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># Window 2
+</span><span style="color:#6272a4"></span>./apps/frontend/version_percentage.sh <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span> <span style="color:#bd93f9">10000</span></code></pre></div>
+<p>You should see in the dashboard some basic information about the traffic</p>
+
+<p><img src="/istio-workshop/img/grafana-dashboard-screenshot.png" alt="Grafana dashboard" /></p>
+
+<p>Now you have some basic monitoring, in next step we want to simulate some error cases by <a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">injecting failures »</a></p>
+
+	</div>
+
+						<div class="Footer">Made with ❤️ by Polar Squad. Content on this site is licensed under a Creative Commons license</div>
+<script src="https://polarsquad.github.io/istio-workshop/js/index.js"></script>
+
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-xxxx-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+					</div>
+				</div>
+		</div>
+	</body>
+</html>

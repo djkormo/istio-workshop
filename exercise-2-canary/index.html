@@ -1,0 +1,195 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Exercise 2: Canary deployment &middot; Istio Workshop</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		
+		<meta http-equiv="content-language" content="en-us" />
+		<meta name="generator" content="Hugo 0.41" />
+		<link rel="stylesheet" href="https://polarsquad.github.io/istio-workshop/css/index.css">
+		<link rel="shortcut icon" href="https://polarsquad.github.io/istio-workshop/favicon.ico" type="image/x-icon">
+	</head>
+
+	<body>
+		<div class="Wrapper">
+			<div class="Container">
+				<div class="Header">
+  <a href="https://polarsquad.github.io/istio-workshop/">
+	<div class="Title center">
+		
+		<img alt="Istio Workshop Logo" src="https://static1.squarespace.com/static/5a21331232601e557c5feacb/t/5abb77bb562fa7acbffc891e/1522238007350/?format=1500w" height="140" />
+		
+		<span class="text">Istio Workshop</span>
+		<span class="subtext"></span>
+	</div>
+  </a>
+</div>
+
+				<div class="Content-wrapper">
+					<div class="Sidebar">
+	<div class="Menu">
+		<div class="item">
+			<a href="https://polarsquad.github.io/istio-workshop/">Home</a>
+		</div>
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/introduction/">Introduction</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/installation/">Install Kubernetes</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/install-istio/">Install Istio</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/deploy-applications/">Deploy Applications</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-1-default-routing/">Exercise 1: Default routing</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-2-canary/">Exercise 2: Canary deployment</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-3-dark-launch/">Exercise 3: Dark Launch</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-4-telemetry/">Exercise 4: Telemetry</a>
+				</div>
+			
+		
+			
+				<div class="item">
+					<a href="https://polarsquad.github.io/istio-workshop/exercise-5-fault/">Exercise 5: Fault Injection</a>
+				</div>
+			
+		
+			
+		
+			
+		
+			
+		
+	</div>
+</div>
+
+					<div class="Content">
+						
+	<div class="Page" id="">
+		<h1>Exercise 2: Canary deployment</h1>
+		
+
+<p>Let&rsquo;s play around with the traffic routing rules to create canary deployments.</p>
+
+<h2 id="weight-based-routing">Weight-based routing</h2>
+
+<p><img src="/istio-workshop/img/canary-routing.png" alt="Default routing" /></p>
+
+<p>Here&rsquo;s a rule where we route 90% of the traffic to version 1 and 10% of the traffic to version 2.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: frontend-canary
+spec:
+  destination:
+    name: frontend-svc
+  precedence: <span style="color:#bd93f9">2</span>
+  route:
+  - labels:
+      version: v1
+    weight: <span style="color:#bd93f9">90</span>
+  - labels:
+      version: v2
+    weight: <span style="color:#bd93f9">10</span></code></pre></div>
+<p>The traffic percentages (weights) are assigned to matching labels. Create the rule:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl create -f apps/frontend/kube/rules/canary.yaml</code></pre></div>
+<blockquote>
+<p>Note that we didn&rsquo;t have to edit the previously created rule. Using the <code>precedence</code> field, we can set ordering for the routing rules. First matching <em>RoutingRule</em> will get applied.</p>
+</blockquote>
+
+<h2 id="let-s-test-it">Let&rsquo;s test it</h2>
+
+<p>Since we&rsquo;ve already set up an <em>Ingress</em> resource for our app, we can reuse the existing endpoint:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ curl <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span>
+&lt;html&gt;&lt;title&gt;Version <span style="color:#bd93f9">1</span>&lt;/title&gt;&lt;/html&gt;
+&lt;body&gt;
+&lt;h1 <span style="color:#8be9fd;font-style:italic">style</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;background-color: blue; color: white&#34;</span>&gt;Version <span style="color:#bd93f9">1</span>&lt;/h1&gt;
+&lt;ul&gt;&lt;li&gt;&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/greetings&#34;</span>&gt;greetings&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;form <span style="color:#8be9fd;font-style:italic">action</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/&#34;</span> <span style="color:#8be9fd;font-style:italic">method</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;post&#34;</span>&gt;
+Title:&lt;br/&gt; &lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;title&#34;</span> /&gt;&lt;br /&gt;
+Text:&lt;br/&gt; &lt;textarea <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;text&#34;</span>&gt;&lt;/textarea&gt;&lt;br /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;hidden&#34;</span> <span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;useEdge&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;false&#34;</span> /&gt;
+&lt;input <span style="color:#8be9fd;font-style:italic">type</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;submit&#34;</span> <span style="color:#8be9fd;font-style:italic">value</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;Submit&#34;</span> /&gt;
+&lt;/form&gt;
+&lt;a <span style="color:#8be9fd;font-style:italic">href</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;?useEdge=true&#34;</span>&gt;Enable edge backend&lt;/a&gt;
+&lt;/body&gt;</code></pre></div>
+<p>There&rsquo;s a chance you might see &ldquo;Version 2&rdquo; in the output instead of &ldquo;Version 1&rdquo; as shown above. If you repeatedly call the endpoint with <code>curl</code>, you&rsquo;ll see the output occasionally flip between the versions. You can also open the endpoint in your browser and refresh the page repeatedly for the same effect.</p>
+
+<p>To verify that the weight distribution works as expected, we can repeatedly call the version endpoint and count the occurrences. The script <code>apps/frontend/version_percentage.sh</code> does all of this for you. Let&rsquo;s run it!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ ./apps/frontend/version_percentage.sh <span style="color:#8be9fd;font-style:italic">$ENDPOINT</span>
+Collecting <span style="color:#bd93f9">1000</span> samples from http://192.168.122.198:31875/version ...
+v1: <span style="color:#bd93f9">91</span>.1%
+v2: <span style="color:#bd93f9">8</span>.9%</code></pre></div>
+<p>The measured weight distribution will slightly vary per test, but overall it looks pretty close to what we set up.</p>
+
+<h2 id="tuning-routing-rule-weights-on-the-fly">Tuning routing rule weights on the fly</h2>
+
+<p>Tuning the routing rules on the fly is super easy! There are two ways to do it, both of which edit the <code>frontend-canary</code> routing rule we defined earlier. You can edit the rule on the server directly using <code>kubectl</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl edit routerule frontend-canary</code></pre></div>
+<p>Alternatively, edit the rule file (<code>apps/frontend/kube/rules/canary.yaml</code>) and update the rule:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">workshop $ kubectl apply -f apps/frontend/kube/rules/canary.yaml</code></pre></div>
+<p>Exercise: Change the weights to something else, and use the <code>version_percentage.sh</code> script to verify weight distribution. Note that the weights must add up to 100.</p>
+
+	</div>
+
+						<div class="Footer">Made with ❤️ by Polar Squad. Content on this site is licensed under a Creative Commons license</div>
+<script src="https://polarsquad.github.io/istio-workshop/js/index.js"></script>
+
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-xxxx-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+					</div>
+				</div>
+		</div>
+	</body>
+</html>
